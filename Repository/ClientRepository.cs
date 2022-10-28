@@ -14,5 +14,7 @@ namespace Repository
         public ClientRepository(RepositoryContext repositoryContext): base(repositoryContext)
         {
         }
+
+        public IEnumerable<Client> GetAllClient(bool trackChanges) => FindAll(trackChanges).OrderBy(c => c.Name).ToList();
     }
 }

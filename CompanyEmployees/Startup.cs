@@ -1,7 +1,10 @@
-﻿using Microsoft.AspNetCore.HttpOverrides;
+﻿using AutoMapper;
 using CompanyEmployees.Extensions;
+using Entities.DataTransferObjects;
+using Entities.Models;
+using LoggerService;
+using Microsoft.AspNetCore.HttpOverrides;
 using NLog;
-
 
 namespace CompanyEmployees;
 
@@ -24,13 +27,14 @@ public class Startup
         services.ConfigureLoggerService();
         services.ConfigureSqlContext(Configuration);
         services.ConfigureRepositoryManager();
+        services.AddAutoMapper(typeof(Startup));
         services.AddControllers();
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerManager logger)
     {
         if (env.IsDevelopment())
         {
@@ -39,6 +43,7 @@ public class Startup
             app.UseSwaggerUI();
         }
 
+        app.ConfigureExceptionHandler(logger);
         app.UseHttpsRedirection();
         app.UseStaticFiles();
         app.UseCors("CorsPolicy");
@@ -55,5 +60,14 @@ public class Startup
         {
             endpoints.MapControllers();
         });
+    }
+    public class MappingProfile : Profile
+    {
+        public MappingProfile()
+        {
+            CreateMap<Company, CompanyDto>().ForMember(c => c.FullAddress, opt => opt.MapFrom(x => string.Join(' ', x.Address, x.Country)));
+            CreateMap<Client, ClientDto>();
+            CreateMap<Product, ProductDto>();
+        }
     }
 }
