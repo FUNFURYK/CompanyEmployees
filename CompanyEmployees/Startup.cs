@@ -9,7 +9,8 @@ public class Startup
 {
     public Startup(IConfiguration configuration)
     {
-        LogManager.LoadConfiguration(string.Concat(Directory.GetCurrentDirectory(),"/nlog.config"));
+        LogManager.LoadConfiguration(string.Concat(Directory.GetCurrentDirectory(),
+            "/nlog.config"));
         Configuration = configuration;
     }
 
@@ -21,7 +22,8 @@ public class Startup
         services.ConfigureCors();
         services.ConfigureIISIntegration();
         services.ConfigureLoggerService();
-
+        services.ConfigureSqlContext(Configuration);
+        services.ConfigureRepositoryManager();
         services.AddControllers();
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
