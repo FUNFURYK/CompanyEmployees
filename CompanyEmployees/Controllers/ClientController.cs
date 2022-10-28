@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CompanyEmployees.Controllers
 {
-    [Route("api/owners")]
+    [Route("api/client")]
     [ApiController]
     public class ClientController : ControllerBase
     {
@@ -22,7 +22,7 @@ namespace CompanyEmployees.Controllers
             _mapper = mapper;
         }
         [HttpGet]
-        public IActionResult GetOwners()
+        public IActionResult GetClient()
         {
             var clients = _repository.Client.GetAllClient(trackChanges: false);
             var clientsDto = _mapper.Map<IEnumerable<Client>>(clients);
